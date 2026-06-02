@@ -284,14 +284,18 @@ def render_playlist(label, songs):
         return
 
     for song in filtered:
-        mood = song.get("mood", "?")
-        tags = ", ".join(song.get("tags", []))
-        st.write(
-            f"- **{song['title']}** by {song['artist']} "
-            f"(genre {song['genre']}, energy {song['energy']}, mood {mood}) "
-            f"[{tags}]"
-        )
+        st.write(format_song(song))
+        
+def format_song(song):        # render_playlist was getting too long, so I moved this out to a helper function
+    """Return a display string for a song."""
+    mood = song.get("mood", "?")
+    tags = ", ".join(song.get("tags", []))
 
+    return (
+        f"- **{song['title']}** by {song['artist']} "
+        f"(genre {song['genre']}, energy {song['energy']}, mood {mood}) "
+        f"[{tags}]"
+    )
 
 def lucky_section(playlists):
     """Render the lucky pick controls and result."""
