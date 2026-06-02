@@ -1,4 +1,5 @@
 from typing import Dict, List, Optional, Tuple
+import random
 
 Song = Dict[str, object]
 PlaylistMap = Dict[str, List[Song]]
@@ -116,13 +117,16 @@ def compute_playlist_stats(playlists: PlaylistMap) -> Dict[str, object]:
     chill = playlists.get("Chill", [])
     mixed = playlists.get("Mixed", [])
 
-    total = len(hype)
-    hype_ratio = len(hype) / total if total > 0 else 0.0
+    # total = len(hype)                                      # this would only count the number of songs in the hype playlist
+    # hype_ratio = len(hype) / total if total > 0 else 0.0   # this would compute the ratio of hype songs to the total number of songs in the hype playlist, which would always be 1.0 or 0.0
+    total = len(all_songs)                                   # total number of songs across all playlists
+    hype_ratio = len(hype) / total if total > 0 else 0.0     # ratio of hype songs to total songs across all playlists
 
     avg_energy = 0.0
     if all_songs:
-        total_energy = sum(song.get("energy", 0) for song in hype)
-        avg_energy = total_energy / len(all_songs)
+        # total_energy = sum(song.get("energy", 0) for song in hype)    # this would only compute the average energy for the hype playlist                    
+        total_energy = sum(song.get("energy", 0) for song in all_songs) # compute the total energy across all songs, using 0 for any song that is missing an energy value
+        avg_energy = total_energy / len(all_songs)                      # compute the average energy by dividing the total energy by the total number of songs, even if they have an energy of 0
 
     top_artist, top_count = most_common_artist(all_songs)
 
@@ -142,7 +146,8 @@ def most_common_artist(songs: List[Song]) -> Tuple[str, int]:
     """Return the most common artist and count."""
     counts: Dict[str, int] = {}
     for song in songs:
-        artist = str(song.get("artist", ""))
+        # artist = str(song.get("artist", "")) # this would not normalize the artist name, so "Artist" and "artist" would be counted separately
+        artist = str(song.get("artist", "")).lower()
         if not artist:
             continue
         counts[artist] = counts.get(artist, 0) + 1
@@ -168,7 +173,8 @@ def search_songs(
 
     for song in songs:
         value = str(song.get(field, "")).lower()
-        if value and value in q:
+        # if value and value in q: # this would match if the query is a substring of the value, but we want to check if the value is a substring of the query
+        if value and q in value: # this will match if the value is a substring of the query
             filtered.append(song)
 
     return filtered
@@ -189,11 +195,16 @@ def lucky_pick(
     return random_choice_or_none(songs)
 
 
-def random_choice_or_none(songs: List[Song]) -> Optional[Song]:
-    """Return a random song or None."""
-    import random
+# def random_choice_or_none(songs: List[Song]) -> Optional[Song]:
+#     """Return a random song or None."""
+#     import random                                    # moved import to the top
 
-    return random.choice(songs)
+#     return random.choice(songs)                      # this will raise an error if songs is empty, so we need to check first
+
+def random_choice_or_none(songs: List[Song]) -> Optional[Song]:
+    if not songs:                                      # check if the list is empty before trying to pick a random song
+        return None                                    # if the list is empty, return None
+    return random.choice(songs)                        # if the list is not empty, return a random song
 
 
 def history_summary(history: List[Song]) -> Dict[str, int]:
