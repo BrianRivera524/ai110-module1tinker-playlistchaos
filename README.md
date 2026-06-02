@@ -1,3 +1,7 @@
+# Reflecting on the task
+
+This lab focuses on how playlist classification logic transforms raw song data into mood-based groupings using rule-based conditions and how small changes in those conditions can significantly affect downstream behavior in a UI. Students typically need to understand how boolean logic order, normalization of inputs, and shared helper functions all interact to produce consistent classifications across a dataset. The most common struggle is debugging “unexpected” categorization results, especially when overlapping rules (like energy thresholds and genre preferences) create implicit priority conflicts. AI can be helpful for spotting patterns in logic errors or suggesting cleaner separations of concerns, but it can be misleading when it confidently proposes behavioral changes that alter the intended spec or silently shifts rule priority without preserving original semantics. In particular, it may overcorrect issues like string matching or refactoring UI code in ways that unintentionally change program behavior. When guiding a student, I would avoid giving the corrected condition directly and instead ask them to trace a single song through each rule step-by-step to identify where the classification diverges from expectations.
+
 # Playlist Chaos
 
 Your AI assistant tried to build a smart playlist generator. The app runs, but some of the behavior is unpredictable. Your task is to explore the app, investigate the code, and use an AI assistant to debug and improve it.
